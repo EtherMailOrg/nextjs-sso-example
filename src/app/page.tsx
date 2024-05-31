@@ -20,6 +20,11 @@ interface EtherMailTokenErrorEvent extends Event {
   };
 }
 
+interface Chain {
+  name: string;
+  chainId: number;
+}
+
 type SSOPermissionType = "write" | "read" | "none";
 
 export default function Home() {
@@ -29,8 +34,9 @@ export default function Home() {
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined);
     const [ethermailProvider, setEthermailProvider] = useState<EtherMailProvider | undefined>(undefined);
     const [signer, setSigner] = useState<string | undefined>(undefined);
+    const [currentChain, setCurrentChain] = useState<Chain | undefined>(undefined);
     const [permissions, setPermissions] = useState<string | undefined>(undefined);
-    const [chains, setChains] = useState([1, 137]);
+    const [chains, setChains] = useState<Chain[]>([{ name: "Ethereum", chainId: 1 }, { name: "Polygon", chainId: 137 }]);
 
     useEffect(() => {
       toast.success("Setting Event Listeners!");
@@ -49,6 +55,12 @@ export default function Home() {
 
         setEthermailProvider(ethermailProvider);
         setProvider(browserProvider);
+        browserProvider.getNetwork().then(response => {
+          setCurrentChain({name: response.name, chainId: Number(response.chainId)})
+        });
+        browserProvider.on("disconnect", () => {
+          console.log("Disconnected from all chains!");
+        });
       });
 
       window.addEventListener("EtherMailTokenError", (event: Event) => {
@@ -180,7 +192,7 @@ export default function Home() {
                     <h1>Select Chain:</h1>
                     <div className="flex justify-between gap-2">
                       {chains.map(chain => {
-                        return <button className="min-w-6" onClick={handleChainChange}>{chain}</button>
+                        return <button className="min-w-6" onClick={handleChainChange}>{chain.name} - {chain.chainId}</button>
                       })}
                     </div>
                   </div>
