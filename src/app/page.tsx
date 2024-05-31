@@ -34,7 +34,6 @@ export default function Home() {
     useEffect(() => {
       toast.success("Setting Event Listeners!");
       window.addEventListener("EtherMailSignInOnSuccess",  (event) => {
-        toast("Processing Sign In Success...");
         const loginEvent = event as EtherMailSignInOnSuccessEvent;
         const loginData = jwt.decode(loginEvent.detail.token);
         console.log(loginData);
@@ -48,7 +47,6 @@ export default function Home() {
       });
 
       window.addEventListener("EtherMailTokenError", (event: Event) => {
-        toast("Processing Error Event...");
         console.log(event);
         const errorEvent = event as EtherMailTokenErrorEvent;
         if (errorEvent.detail.type === "expired") {
@@ -174,18 +172,20 @@ export default function Home() {
                       })}
                     </div>
                   </div>
-                  <div>
-                    <h1>Actions:</h1>
-                    <div>
-                      <p>Sign Message:</p>
-                      <button onClick={handleSignMessage}>Sign Message</button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              :
-              ""}
+            <div>
+              <h1>Actions:</h1>
+              <div>
+                <h4>Sign Message:</h4>
+                <button onClick={handleSignMessage}>Sign Message</button>
+              </div>
+              <div>
+                <h4>Claim Token:</h4>
+                <button onClick={handleSignMessage}>Claim Token</button>
+              </div>
+            </div>
           </div>
+          </section>
+          :
           <section>
             <h1>Admin Panel:</h1>
             <div>
@@ -202,6 +202,8 @@ export default function Home() {
               </div>
             </div>
           </section>
+        }
+          </div>
         </main>
       </>
   );
