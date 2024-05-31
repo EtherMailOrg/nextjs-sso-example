@@ -3,7 +3,7 @@ import Image from "next/image";
 import Script from "next/script"
 import { useEffect, useState } from "react";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
-import ethers from 'ethers';
+import ethers, { BrowserProvider } from 'ethers';
 import { Toaster, toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 const jwt = require('jsonwebtoken');
@@ -26,7 +26,7 @@ export default function Home() {
     const router = useRouter();
 
     const [ssoPermission, setSsoPermission] = useState<SSOPermissionType>("write");
-    const [provider, setProvider] = useState<ethers.BrowserProvider | undefined>(undefined);
+    const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined);
     const [ethermailProvider, setEthermailProvider] = useState<EtherMailProvider | undefined>(undefined);
     const [signer, setSigner] = useState<string | undefined>(undefined);
     const [permissions, setPermissions] = useState<string | undefined>(undefined);
@@ -45,7 +45,7 @@ export default function Home() {
           websocketServer: "wss://staging-api.ethermail.io/events",
           appUrl: "https://staging.ethermail.io"
         });
-        const browserProvider = new ethers.BrowserProvider(ethermailProvider);
+        const browserProvider = new BrowserProvider(ethermailProvider);
 
         setEthermailProvider(ethermailProvider);
         setProvider(browserProvider);
