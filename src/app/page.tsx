@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import Script from "next/script"
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
 import { BrowserProvider } from 'ethers';
 import { Toaster, toast } from "react-hot-toast";
@@ -135,7 +135,7 @@ export default function Home() {
           {signer && permissions ?
             <div className="flex justify-between gap-2">
               <div className="flex flex-col gap-2">
-                <h3>EtherMail Signer:</h3>
+                <h3 className="text-bold">EtherMail Signer:</h3>
                 <p>{signer}</p>
               </div>
               <div className="flex flex-col gap-2">
@@ -188,8 +188,8 @@ export default function Home() {
           :
           <section>
             <h1>Admin Panel:</h1>
-            <div>
-              <p>Change Permissions:</p>
+            <div className="flex flex-col gap-4">
+              <h3>Change Permissions:</h3>
               <div>
                 <select onChange={handleSSOPermissionChange}>
                   <option key="labelOption" value="">--- Change SSO Permissions ---</option>
