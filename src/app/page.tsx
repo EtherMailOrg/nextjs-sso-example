@@ -56,6 +56,8 @@ export default function Home() {
         setEthermailProvider(ethermailProvider);
         setProvider(browserProvider);
         browserProvider.getNetwork().then(response => {
+          console.log("Network Response:");
+          console.log(response);
           setCurrentChain({name: response.name, chainId: Number(response.chainId)})
         });
         browserProvider.on("disconnect", () => {
