@@ -135,7 +135,7 @@ export default function Home() {
           {signer && permissions ?
             <div className="flex justify-between gap-2">
               <div className="flex flex-col gap-2">
-                <h3 className="text-bold">EtherMail Signer:</h3>
+                <h3>EtherMail Signer:</h3>
                 <p>{signer}</p>
               </div>
               <div className="flex flex-col gap-2">
