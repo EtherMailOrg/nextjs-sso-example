@@ -74,7 +74,7 @@ export default function Home() {
                   <div className="flex flex-col gap-2 m-4">
                     <button onClick={metamaskLogin}>Metamask</button>
 
-                    <ethermail-login widget="665994315f3bb424d99cf7f1" type="wallet"
+                    <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
                                      permissions="write"></ethermail-login>
                   </div>
                 </section>
