@@ -81,8 +81,11 @@ export default function Home() {
 
   async function handleSignMessage() {
     try {
+      if (!provider) throw Error("Need provider to sign!");
+
+      console.log(provider);
       const message = "Test message to sign!";
-      const signer = await provider?.getSigner();
+      const signer = await provider.getSigner();
 
       if (!signer) throw Error("No signer!");
 
