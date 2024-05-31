@@ -21,16 +21,19 @@ interface EtherMailTokenErrorEvent extends CustomEvent {
 
 export default function Home() {
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined);
+    const [signer, setSigner] = useState<string | undefined>(undefined);
+    const [permissions, setPermissions] = useState<string | undefined>(undefined);
     const [chains, setChains] = useState([1, 137]);
 
     useEffect(() => {
       toast.success("Setting Event Listeners!");
       window.addEventListener("EtherMailSignInOnSuccess",  (event) => {
         toast("Processing Sign In Success...");
-        console.log(event);
         const loginEvent = event as EtherMailSignInOnSuccessEvent;
-        console.log("token", loginEvent.detail.token);
-        console.log(jwt.decode(loginEvent.detail.token));
+        const loginData = jwt.decode(loginEvent.detail.token);
+        console.log(loginData);
+        setSigner(loginData.wallet);
+        setPermissions(loginData.permissions);
         // If you want to support wallet actions, connect to our provider
         setProvider(new BrowserProvider(new EtherMailProvider({
           websocketServer: "wss://staging-api.ethermail.io/events",
@@ -76,40 +79,52 @@ export default function Home() {
                 });
             }}
         />
-        <main className="flex min-h-screen flex-col items-center p-24 gap-2">
-            <div className="flex flex-col gap-4">
-                <h1>My SSO Tets</h1>
-                <section>
-                  <h2>Login:</h2>
-                  <div className="flex flex-col gap-2 m-4">
-                    <button onClick={metamaskLogin}>Metamask</button>
-
-                    <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
-                                     permissions="write"></ethermail-login>
-                  </div>
-                </section>
-              {provider ?
-                <section className="flex flex-col">
-                  <div>
-                    <div>
-                      <h1>Select Chain:</h1>
-                      {chains.map(chain => {
-                        return <button>{chain}</button>
-                      })}
-                    </div>
-                    <div>
-                      <h1>Actions:</h1>
-                      <div>
-                        <p>Sign Message:</p>
-                        <button>Sign Message</button>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                :
-                ""}
-
+        <main className="flex min-h-screen flex-col items-center p-16 gap-2">
+          {signer && permissions ?
+            <div className="flex justify-between gap-2">
+              <div className="flex flex-col gap-2">
+                <h3>EtherMail Signer:</h3>
+                <p>{signer}</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3>Signer Permissions:</h3>
+                <p>{permissions}</p>
+              </div>
             </div>
+            :
+            ""}
+          <div className="flex flex-col gap-4">
+            <h1>My SSO Tets</h1>
+            <section>
+              <h2>Login:</h2>
+              <div className="flex flex-col gap-2 m-4">
+                <button onClick={metamaskLogin}>Metamask</button>
+
+                <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
+                                 permissions="write"></ethermail-login>
+              </div>
+            </section>
+            {provider ?
+              <section className="flex flex-col">
+                <div>
+                  <div>
+                    <h1>Select Chain:</h1>
+                    {chains.map(chain => {
+                      return <button>{chain}</button>
+                    })}
+                  </div>
+                  <div>
+                    <h1>Actions:</h1>
+                    <div>
+                      <p>Sign Message:</p>
+                      <button>Sign Message</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              :
+              ""}
+          </div>
         </main>
       </>
   );
