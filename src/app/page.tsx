@@ -154,8 +154,8 @@ export default function Home() {
                 <>
                 <h2>Login:</h2>
                 <div className="flex flex-col gap-2 m-4">
-                  <button onClick={metamaskLogin}>Metamask</button>
-                  <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
+                  <button style={{width: "150px", backgroundColor: "black", color: "white", fontWeight: 700, borderRadius: "1rem"}} onClick={metamaskLogin}>Metamask</button>
+                  <ethermail-login style={{width: "150px", backgroundColor: "black", color: "white", fontWeight: 700, borderRadius: "1rem"}} widget="6659a4865f3bb424d99d11b2" type="wallet"
                              permissions={ssoPermission} text="Login"></ethermail-login>
                 </div>
                 </>
