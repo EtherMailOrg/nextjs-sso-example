@@ -57,6 +57,10 @@ export default function Home() {
       toast.error("Not yet implemented!");
   }
 
+  function handleDisconnect() {
+    toast.error("Disconnect not implemented");
+  }
+
   return (
       <>
         <Toaster />
@@ -94,19 +98,24 @@ export default function Home() {
             :
             ""}
           <div className="flex flex-col gap-4">
-            <h1>My SSO Tets</h1>
+            <h1>My SSO Test</h1>
             <section>
-              <h2>Login:</h2>
-              <div className="flex flex-col gap-2 m-4">
-                <button onClick={metamaskLogin}>Metamask</button>
-
-                <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
-                                 permissions="write"></ethermail-login>
-              </div>
-            </section>
-            {provider ?
-              <section className="flex flex-col">
-                <div>
+              {provider ?
+                <button onClick={handleDisconnect}>Disconnect</button>
+                :
+                <>
+                <h2>Login:</h2>
+                <div className="flex flex-col gap-2 m-4">
+                  <button onClick={metamaskLogin}>Metamask</button>
+                  <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
+                             permissions="write"></ethermail-login>
+                </div>
+                </>
+               }
+        </section>
+        {provider ?
+          <section className="flex flex-col">
+          <div>
                   <div>
                     <h1>Select Chain:</h1>
                     {chains.map(chain => {
