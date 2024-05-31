@@ -61,6 +61,27 @@ export default function Home() {
     toast.error("Disconnect not implemented");
   }
 
+  function handleChainChange() {
+    try {
+      toast("Not yet implemented!");
+    } catch(err) {
+      toast.error(err.message);
+      console.log(err);
+    }
+  }
+
+  async function handleSignMessage() {
+    try {
+      const message = "Test message to sign!";
+      const signer = await provider?.getSigner();
+      const signedMessage = await signer.signMessage(message);
+      toast.success(`Signed Message: ${signedMessage}`);
+    } catch(err) {
+      toast.error(err.message);
+      console.log(err);
+    }
+  }
+
   return (
       <>
         <Toaster />
@@ -118,15 +139,17 @@ export default function Home() {
           <div>
                   <div>
                     <h1>Select Chain:</h1>
-                    {chains.map(chain => {
-                      return <button>{chain}</button>
-                    })}
+                    <div className="flex justify-between gap-2">
+                      {chains.map(chain => {
+                        return <button>{chain}</button>
+                      })}
+                    </div>
                   </div>
                   <div>
                     <h1>Actions:</h1>
                     <div>
                       <p>Sign Message:</p>
-                      <button>Sign Message</button>
+                      <button onClick={handleSignMessage}>Sign Message</button>
                     </div>
                   </div>
                 </div>
