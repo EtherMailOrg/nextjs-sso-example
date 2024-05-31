@@ -26,6 +26,13 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+button {
+  padding: 0.5rem 0.5rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.3rem;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
