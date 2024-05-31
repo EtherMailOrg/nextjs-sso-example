@@ -39,11 +39,18 @@ export default function Home() {
         console.log(loginData);
         setSigner(loginData.wallet);
         setPermissions(loginData.permissions);
-        // If you want to support wallet actions, connect to our provider
-        setProvider(new BrowserProvider(new EtherMailProvider({
+
+        const ethermailProvider = new EtherMailProvider({
           websocketServer: "wss://staging-api.ethermail.io/events",
           appUrl: "https://staging.ethermail.io"
-        })));
+        });
+        console.log("Ethermail Provider");
+        console.log(ethermailProvider);
+        const browserProvider = new BrowserProvider(ethermailProvider);
+        console.log("Browser Provider:");
+        console.log(browserProvider);
+        // If you want to support wallet actions, connect to our provider
+        setProvider(browserProvider);
       });
 
       window.addEventListener("EtherMailTokenError", (event: Event) => {
@@ -83,7 +90,6 @@ export default function Home() {
     try {
       if (!provider) throw Error("Need provider to sign!");
 
-      console.log(provider);
       const message = "Test message to sign!";
       const signer = await provider.getSigner();
 
