@@ -27,7 +27,10 @@ export default function Home() {
         const loginEvent = event as EtherMailSignInOnSuccessEvent;
         console.log("token", loginEvent.detail.token);
         // If you want to support wallet actions, connect to our provider
-        setProvider(new BrowserProvider(new EtherMailProvider()));
+        setProvider(new BrowserProvider(new EtherMailProvider({
+          websocketServer: "wss://staging-api.ethermail.io/events",
+          appUrl: "https://staging.ethermail.io"
+        })));
       });
 
       window.addEventListener("EtherMailTokenError", (event: Event) => {
