@@ -64,7 +64,7 @@ export default function Home() {
   function handleChainChange() {
     try {
       toast("Not yet implemented!");
-    } catch(err) {
+    } catch(err: any) {
       toast.error(err.message);
       console.log(err);
     }
@@ -74,9 +74,12 @@ export default function Home() {
     try {
       const message = "Test message to sign!";
       const signer = await provider?.getSigner();
+
+      if (!signer) throw Error("No signer!");
+      
       const signedMessage = await signer.signMessage(message);
       toast.success(`Signed Message: ${signedMessage}`);
-    } catch(err) {
+    } catch(err: any) {
       toast.error(err.message);
       console.log(err);
     }
@@ -141,7 +144,7 @@ export default function Home() {
                     <h1>Select Chain:</h1>
                     <div className="flex justify-between gap-2">
                       {chains.map(chain => {
-                        return <button>{chain}</button>
+                        return <button onClick={handleChainChange}>{chain}</button>
                       })}
                     </div>
                   </div>
