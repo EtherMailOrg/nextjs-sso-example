@@ -172,7 +172,7 @@ export default function Home() {
                       })}
                     </div>
                   </div>
-            <div>
+            <div className="flex flex-col align-center justify-center gap-4">
               <h1>Actions:</h1>
               <div>
                 <h4>Sign Message:</h4>
