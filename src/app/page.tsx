@@ -24,6 +24,7 @@ export default function Home() {
     useEffect(() => {
       toast.success("Inside!");
       window.addEventListener("EtherMailSignInOnSuccess",  (event) => {
+        toast("Processing Sign In Success");
         const loginEvent = event as EtherMailSignInOnSuccessEvent;
         console.log("token", loginEvent.detail.token);
         // If you want to support wallet actions, connect to our provider
@@ -34,6 +35,7 @@ export default function Home() {
       });
 
       window.addEventListener("EtherMailTokenError", (event: Event) => {
+        toast("Processing Error Event");
         const errorEvent = event as EtherMailTokenErrorEvent;
         if (errorEvent.detail.type === "expired") {
           toast.error("Expired Session!");
@@ -41,7 +43,7 @@ export default function Home() {
           toast.error("Permissions Error!");
         }
       });
-    }, [])
+    });
 
   function metamaskLogin() {
       toast.error("Not yet implemented!");
