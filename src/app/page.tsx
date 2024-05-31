@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
 import { BrowserProvider } from 'ethers';
 import { Toaster, toast } from "react-hot-toast";
+const jwt = require('jsonwebtoken');
 
 interface EtherMailSignInOnSuccessEvent extends CustomEvent {
   detail: {
@@ -20,6 +21,7 @@ interface EtherMailTokenErrorEvent extends CustomEvent {
 
 export default function Home() {
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined);
+    const [chains, setChains] = useState([1, 137]);
 
     useEffect(() => {
       toast.success("Setting Event Listeners!");
@@ -28,6 +30,7 @@ export default function Home() {
         console.log(event);
         const loginEvent = event as EtherMailSignInOnSuccessEvent;
         console.log("token", loginEvent.detail.token);
+        console.log(jwt.decode(loginEvent.detail.token));
         // If you want to support wallet actions, connect to our provider
         setProvider(new BrowserProvider(new EtherMailProvider({
           websocketServer: "wss://staging-api.ethermail.io/events",
@@ -89,7 +92,17 @@ export default function Home() {
                 <section className="flex flex-col">
                   <div>
                     <div>
-                      <h1>Actions</h1>
+                      <h1>Select Chain:</h1>
+                      {chains.map(chain => {
+                        return <button>{chain}</button>
+                      })}
+                    </div>
+                    <div>
+                      <h1>Actions:</h1>
+                      <div>
+                        <p>Sign Message:</p>
+                        <button>Sign Message</button>
+                      </div>
                     </div>
                   </div>
                 </section>
