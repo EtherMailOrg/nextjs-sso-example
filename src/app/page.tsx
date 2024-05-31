@@ -5,21 +5,27 @@ import { useEffect, useState } from "react";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
 import { BrowserProvider } from 'ethers';
 import { Toaster, toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const jwt = require('jsonwebtoken');
 
-interface EtherMailSignInOnSuccessEvent extends CustomEvent {
+interface EtherMailSignInOnSuccessEvent extends Event {
   detail: {
     token: string;
   };
 }
 
-interface EtherMailTokenErrorEvent extends CustomEvent {
+interface EtherMailTokenErrorEvent extends Event {
   detail: {
     type: "expired" | "permissions";
   };
 }
 
+type SSOPermissionType = "write" | "read" | "none";
+
 export default function Home() {
+    const router = useRouter();
+
+    const [ssoPermission, setSsoPermission] = useState<SSOPermissionType>("write");
     const [provider, setProvider] = useState<BrowserProvider | undefined>(undefined);
     const [signer, setSigner] = useState<string | undefined>(undefined);
     const [permissions, setPermissions] = useState<string | undefined>(undefined);
@@ -58,7 +64,12 @@ export default function Home() {
   }
 
   function handleDisconnect() {
-    toast.error("Disconnect not implemented");
+    try {
+      toast("Not yet implemented");
+    } catch (err: any) {
+      toast.error(err.message);
+      console.log(err);
+    }
   }
 
   function handleChainChange() {
@@ -76,9 +87,24 @@ export default function Home() {
       const signer = await provider?.getSigner();
 
       if (!signer) throw Error("No signer!");
-      
+
       const signedMessage = await signer.signMessage(message);
       toast.success(`Signed Message: ${signedMessage}`);
+    } catch(err: any) {
+      toast.error(err.message);
+      console.log(err);
+    }
+  }
+
+  function handleSSOPermissionChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    try {
+      const selectedValue = event.target.value;
+
+      if (!selectedValue) throw Error("Must select a valid permission");
+
+      setSsoPermission(selectedValue as SSOPermissionType);
+      router.refresh();
+      toast.success("SSO Permissions Changed!");
     } catch(err: any) {
       toast.error(err.message);
       console.log(err);
@@ -132,7 +158,7 @@ export default function Home() {
                 <div className="flex flex-col gap-2 m-4">
                   <button onClick={metamaskLogin}>Metamask</button>
                   <ethermail-login widget="6659a4865f3bb424d99d11b2" type="wallet"
-                             permissions="write"></ethermail-login>
+                             permissions={ssoPermission} text="Login"></ethermail-login>
                 </div>
                 </>
                }
@@ -144,7 +170,7 @@ export default function Home() {
                     <h1>Select Chain:</h1>
                     <div className="flex justify-between gap-2">
                       {chains.map(chain => {
-                        return <button onClick={handleChainChange}>{chain}</button>
+                        return <button className="min-w-6" onClick={handleChainChange}>{chain}</button>
                       })}
                     </div>
                   </div>
@@ -160,6 +186,22 @@ export default function Home() {
               :
               ""}
           </div>
+          <section>
+            <h1>Admin Panel:</h1>
+            <div>
+              <p>Change Permissions:</p>
+              <div>
+                <select onChange={handleSSOPermissionChange}>
+                  <option key="labelOption" value="">--- Change SSO Permissions ---</option>
+                  {
+                    ["write", "read", "none"].map(permission => {
+                      return <option key={"ssoOption-" + permission} value={permission}>{permission}{ssoPermission === permission ? " (Current)" : ""}</option>;
+                    })
+                  }
+                </select>
+              </div>
+            </div>
+          </section>
         </main>
       </>
   );
