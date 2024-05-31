@@ -71,6 +71,8 @@ export default function Home() {
       if (!ethermailProvider) throw new Error("No Provider!");
 
       await ethermailProvider.disconnect();
+      setSigner(undefined);
+      setProvider(undefined);
       toast.success("Wallet disconnected!");
     } catch (err: any) {
       toast.error(err.message);
