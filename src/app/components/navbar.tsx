@@ -16,11 +16,13 @@ import { _ethermailProvider } from "@/lib/reducers/ethermailProviderSlice";
 import { _loginDataProvider } from "@/lib/reducers/loginDataProviderSlice";
 import Script from "next/script";
 import { Chain } from "@/intefaces/web3.interfaces";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
 
 export default function NavBar() {
   const router = useRouter();
+  const path = usePathname();
+  console.log(path);
 
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
   const ethermailProvider = useAppSelector(state => state.ethermailProvider.value) as EtherMailProvider | undefined;
@@ -101,6 +103,19 @@ export default function NavBar() {
     }
   }
 
+  function handlePageChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    try {
+      const newPage = event.target.value;
+
+      if (newPage === path) throw new Error("Already on selected page");
+
+      router.replace(newPage);
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message);
+    }
+  }
+
   return (
     <>
       <Script
@@ -128,6 +143,15 @@ export default function NavBar() {
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-2">
+            <select onChange={handlePageChange}>
+              <option key="labelOption" value="">--- Change Page ---</option>
+              {
+                ["/", "/token", "/nfts"].map(page => {
+                  return <option key={"page-" + page}
+                                 value={page}>{page === "/" ? "Home" : page.slice(1)}{page === path ? " (Current)" : ""}</option>;
+                })
+              }
+            </select>
             {loginData ?
               "" :
               <select onChange={handleSSOPermissionChange}>
