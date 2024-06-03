@@ -44,13 +44,9 @@ export default function NavBar() {
       });
       const browserProvider = new BrowserProvider(ethermailProvider);
 
-      console.log("Setting data...");
       _loginDataProvider.setData(loginData);
       _ethermailProvider.setProvider(ethermailProvider);
       _web3Provider.setProvider(browserProvider);
-
-      console.log("Set data!")
-      router.refresh();
     });
 
     window.addEventListener("EtherMailTokenError", (event: Event) => {
