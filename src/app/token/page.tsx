@@ -27,7 +27,7 @@ export default function TokenPage() {
                   </div>
                   <div>
                     <h4>Claim Token:</h4>
-                    <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim Token</button>
+                    <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim</button>
                   </div>
                 </div>
               </div>
