@@ -77,9 +77,19 @@ export default function NavBar() {
     }
   }
 
-  function handleChainChange() {
+  async function handleChainChange(event: React.ChangeEvent<HTMLSelectElement>) {
     try {
-      toast("Not yet implemented!");
+      const chainId = +event.target.value;
+
+      if (!ethermailProvider) throw new Error("Connect wallet before");
+
+      await ethermailProvider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainId }]
+      });
+
+      setChain(chains.find(chain => chain.chainId === chainId) ?? undefined);
+      toast.success("Chain changed!");
     } catch(err: any) {
       toast.error(err.message);
       console.log(err);
