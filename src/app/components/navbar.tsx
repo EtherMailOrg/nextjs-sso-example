@@ -53,12 +53,8 @@ export default function NavBar() {
         toast("Changed chain event heard!");
       });
 
-      __browserProvider.on("disconnect", () => {
-        toast("Disconnect event heard!");
-      });
-
-      __browserProvider.on("chainChanged", () => {
-        toast("Changed chain event heard!");
+      __ethermailProvider.on("message", () => {
+        toast("Message event heard!");
       });
 
       dispatch(_loginDataProvider.setData(__loginData as EthermailLoginData));
