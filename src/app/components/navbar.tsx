@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
 import { BrowserProvider } from "ethers";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { _web3Provider } from '@/lib/reducers/web3ProviderSlice';
+import { _web3Provider, web3ProviderSlice } from "@/lib/reducers/web3ProviderSlice";
 import { _ethermailProvider } from "@/lib/reducers/ethermailProviderSlice";
 import { _loginDataProvider } from "@/lib/reducers/loginDataProviderSlice";
 import Script from "next/script";
@@ -34,19 +34,23 @@ export default function NavBar() {
   useEffect(() => {
     toast.success("Setting Event Listeners!");
     window.addEventListener("EtherMailSignInOnSuccess",  (event) => {
-      const loginEvent = event as EtherMailSignInOnSuccessEvent;
-      const loginData = jwt.decode(loginEvent.detail.token);
+      const __loginEvent = event as EtherMailSignInOnSuccessEvent;
+      const __loginData = jwt.decode(__loginEvent.detail.token);
       console.log(loginData);
 
-      const ethermailProvider = new EtherMailProvider({
+      const __ethermailProvider = new EtherMailProvider({
         websocketServer: "wss://staging-api.ethermail.io/events",
         appUrl: "https://staging.ethermail.io"
       });
-      const browserProvider = new BrowserProvider(ethermailProvider);
+      const __browserProvider = new BrowserProvider(__ethermailProvider);
 
-      _loginDataProvider.setData(loginData);
-      _ethermailProvider.setProvider(ethermailProvider);
-      _web3Provider.setProvider(browserProvider);
+      _loginDataProvider.setData(__loginData);
+      _ethermailProvider.setProvider(_ethermailProvider);
+      _web3Provider.setProvider(__browserProvider);
+
+      console.log(loginData);
+      console.log(ethermailProvider);
+      console.log(web3Provider);
     });
 
     window.addEventListener("EtherMailTokenError", (event: Event) => {
