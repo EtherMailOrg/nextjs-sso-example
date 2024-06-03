@@ -36,7 +36,7 @@ export default function NavBar() {
     window.addEventListener("EtherMailSignInOnSuccess",  (event) => {
       const __loginEvent = event as EtherMailSignInOnSuccessEvent;
       const __loginData = jwt.decode(__loginEvent.detail.token);
-      console.log(loginData);
+      console.log(__loginData);
 
       const __ethermailProvider = new EtherMailProvider({
         websocketServer: "wss://staging-api.ethermail.io/events",
