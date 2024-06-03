@@ -44,11 +44,11 @@ export default function NavBar() {
       });
       const __browserProvider = new BrowserProvider(__ethermailProvider);
 
-      _loginDataProvider.setData(__loginData);
+      // _loginDataProvider.setData(__loginData);
       _ethermailProvider.setProvider(_ethermailProvider);
       _web3Provider.setProvider(__browserProvider);
 
-      console.log(loginData);
+      // console.log(loginData);
       console.log(ethermailProvider);
       console.log(web3Provider);
     });
