@@ -22,7 +22,6 @@ import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
 export default function NavBar() {
   const router = useRouter();
   const path = usePathname();
-  console.log(path);
 
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
   const ethermailProvider = useAppSelector(state => state.ethermailProvider.value) as EtherMailProvider | undefined;
