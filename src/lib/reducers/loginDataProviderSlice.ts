@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
 
 export const loginDataProviderSlice = createSlice({
   name: 'loginData',
@@ -9,7 +10,7 @@ export const loginDataProviderSlice = createSlice({
     reset: state => {
       state.value = undefined
     },
-    setData: (state, action) => {
+    setData: (state, action: PayloadAction<EthermailLoginData>) => {
       state.value = action.payload
     },
   }

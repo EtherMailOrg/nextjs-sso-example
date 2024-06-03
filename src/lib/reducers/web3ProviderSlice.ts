@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { BrowserProvider } from "ethers";
 
 export const web3ProviderSlice = createSlice({
   name: 'web3Provider',
@@ -9,7 +10,7 @@ export const web3ProviderSlice = createSlice({
     reset: state => {
       state.value = undefined
     },
-    setProvider: (state, action) => {
+    setProvider: (state, action: PayloadAction<BrowserProvider>) => {
       state.value = action.payload
     },
   }
