@@ -26,7 +26,7 @@ export default function NFTPage() {
                     <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Sign Message</button>
                   </div>
                   <div>
-                    <h4>Claim Token:</h4>
+                    <h4>Claim NFT:</h4>
                     <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim Token</button>
                   </div>
                 </div>

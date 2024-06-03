@@ -24,10 +24,6 @@ export default function Home() {
                 <h4>Sign Message:</h4>
                 <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Sign Message</button>
               </div>
-              <div>
-                <h4>Claim Token:</h4>
-                <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim Token</button>
-              </div>
             </div>
           </div>
           </section>
