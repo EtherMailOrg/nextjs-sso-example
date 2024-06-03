@@ -47,10 +47,6 @@ export default function NavBar() {
       dispatch(_loginDataProvider.setData(__loginData as EthermailLoginData));
       dispatch(_ethermailProvider.setProvider(__ethermailProvider));
       dispatch(_web3Provider.setProvider(__browserProvider));
-
-      console.log(loginData);
-      console.log(ethermailProvider);
-      console.log(web3Provider);
     });
 
     window.addEventListener("EtherMailTokenError", (event: Event) => {
@@ -128,15 +124,18 @@ export default function NavBar() {
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="flex gap-2">
-            <select onChange={handleSSOPermissionChange}>
-              <option key="labelOption" value="">--- Change SSO Permissions ---</option>
-              {
-                ["write", "read", "none"].map(permission => {
-                  return <option key={"ssoOption-" + permission}
-                                 value={permission}>{permission}{ssoPermission === permission ? " (Current)" : ""}</option>;
-                })
-              }
-            </select>
+            {loginData ?
+              "" :
+              <select onChange={handleSSOPermissionChange}>
+                <option key="labelOption" value="">--- Change SSO Permissions ---</option>
+                {
+                  ["write", "read", "none"].map(permission => {
+                    return <option key={"ssoOption-" + permission}
+                                   value={permission}>{permission}{ssoPermission === permission ? " (Current)" : ""}</option>;
+                  })
+                }
+              </select>
+            }
             <select onChange={handleChainChange}>
               <option key="labelOption" value="">--- Change Chain ---</option>
               {
