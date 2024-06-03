@@ -90,6 +90,10 @@ export default function NavBar() {
 
 
       await (ethermailProvider as EtherMailProvider).disconnect();
+
+      dispatch(_web3Provider.reset());
+      dispatch(_ethermailProvider.reset());
+      dispatch(_loginDataProvider.reset());
       toast.success("Wallet disconnected!");
     } catch (err: any) {
       toast.error(err.message);
