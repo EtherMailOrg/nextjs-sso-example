@@ -17,13 +17,14 @@ import { _loginDataProvider } from "@/lib/reducers/loginDataProviderSlice";
 import Script from "next/script";
 import { Chain } from "@/intefaces/web3.interfaces";
 import { useRouter } from "next/navigation";
+import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
 
 export default function NavBar() {
   const router = useRouter();
 
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
   const ethermailProvider = useAppSelector(state => state.ethermailProvider.value) as EtherMailProvider | undefined;
-  const loginData = useAppSelector(state => state.loginData.value) as any | undefined;
+  const loginData = useAppSelector(state => state.loginData.value) as EthermailLoginData | undefined;
   const dispatch = useAppDispatch();
 
   const [ssoPermission, setSsoPermission] = useState("write");
@@ -46,9 +47,6 @@ export default function NavBar() {
 
       _ethermailProvider.setProvider(ethermailProvider);
       _web3Provider.setProvider(browserProvider);
-      browserProvider.on("disconnect", () => {
-        console.log("Disconnected from all chains!");
-      });
     });
 
     window.addEventListener("EtherMailTokenError", (event: Event) => {
@@ -150,7 +148,7 @@ export default function NavBar() {
               <div className="flex justify-between gap-2">
                 <div className="flex flex-col gap-2">
                   <h3>EtherMail Signer:</h3>
-                  <p>"Signer CHANGE"</p>
+                  <p>{loginData.wallet}</p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h3>Signer Permissions:</h3>
