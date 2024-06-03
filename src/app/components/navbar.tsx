@@ -45,6 +45,14 @@ export default function NavBar() {
       });
       const __browserProvider = new BrowserProvider(__ethermailProvider);
 
+      __ethermailProvider.on("disconnect", () => {
+        toast("Disconnect event heard!");
+      });
+
+      __ethermailProvider.on("chainChanged", () => {
+        toast("Changed chain event heard!");
+      });
+
       __browserProvider.on("disconnect", () => {
         toast("Disconnect event heard!");
       });
