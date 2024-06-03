@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
 
+interface LoginDataState {
+  value: EthermailLoginData | undefined;
+}
+
+const initialState: LoginDataState = {
+  value: undefined
+};
+
 export const loginDataProviderSlice = createSlice({
   name: 'loginData',
-  initialState: {
-    value: undefined
-  },
+  initialState,
   reducers: {
     reset: state => {
       state.value = undefined

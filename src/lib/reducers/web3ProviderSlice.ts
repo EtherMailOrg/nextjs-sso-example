@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BrowserProvider } from "ethers";
 
+interface Web3ProviderState {
+  value: BrowserProvider | undefined;
+}
+
+const initialState: Web3ProviderState = {
+  value: undefined
+};
+
 export const web3ProviderSlice = createSlice({
   name: 'web3Provider',
-  initialState: {
-    value: undefined
-  },
+  initialState,
   reducers: {
     reset: state => {
       state.value = undefined

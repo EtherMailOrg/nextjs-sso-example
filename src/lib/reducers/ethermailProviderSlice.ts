@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EtherMailProvider } from "@ethermail/ethermail-wallet-provider";
 
+interface EthermailProviderState {
+  value: EtherMailProvider | undefined;
+}
+
+const initialState: EthermailProviderState = {
+  value: undefined
+};
+
 export const ethermailProviderSlice = createSlice({
   name: 'ethermailProvider',
-  initialState: {
-    value: undefined
-  },
+  initialState,
   reducers: {
     reset: state => {
       state.value = undefined
