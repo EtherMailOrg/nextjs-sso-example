@@ -8,6 +8,7 @@ export default function Home() {
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
   const ethermailProvider = useAppSelector(state => state.ethermailProvider.value) as BrowserProvider | undefined;
   const web3Utils = new Web3Utils();
+  const signMessage = "Sign message with SSO";
 
   return (
     <>
@@ -21,11 +22,11 @@ export default function Home() {
               <h1>Actions:</h1>
               <div>
                 <h4>Sign Message:</h4>
-                <button onClick={async () => {await web3Utils.handleSignMessage(web3Provider)}}>Sign Message</button>
+                <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Sign Message</button>
               </div>
               <div>
                 <h4>Claim Token:</h4>
-                <button onClick={async () => {await web3Utils.handleSignMessage(web3Provider)}}>Claim Token</button>
+                <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim Token</button>
               </div>
             </div>
           </div>
