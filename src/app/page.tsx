@@ -22,7 +22,7 @@ export default function Home() {
       const signedMessage = await signer.signMessage(message);
       console.log(signedMessage)
       toast.success(`Signed Message: ${signedMessage}`, { duration: 8000 });
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message);
       console.log(err);
     }
