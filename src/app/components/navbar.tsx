@@ -29,7 +29,7 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
 
   const [ssoPermission, setSsoPermission] = useState("write");
-  const [chains, setChains] = useState<Chain[]>([{ name: "Ethereum", chainId: 1 }, { name: "Polygon", chainId: 137 }]);
+  const [chains, setChains] = useState<Chain[]>([{ name: "Ethereum", chainId: 1 }, { name: "Polygon", chainId: 137 }, { name: "Arbitrum", chainId: 42161 }]);
   const [chain, setChain] = useState<Chain | undefined>();
 
   useEffect(() => {
@@ -102,6 +102,7 @@ export default function NavBar() {
       setChain(chains.find(chain => chain.chainId === chainId) ?? undefined);
       toast.success("Chain changed!");
     } catch(err: any) {
+      event.target.value = "";
       toast.error(err.message);
       console.log(err);
     }
