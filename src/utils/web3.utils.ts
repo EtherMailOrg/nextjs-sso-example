@@ -13,7 +13,7 @@ export class Web3Utils {
       if (!signer) throw Error("No signer!");
 
       const signedMessage = await signer.signMessage(message);
-      toast.success(`Signed Message: ${signedMessage}`);
+      toast.success(`Signed Message: ${signedMessage}`, { duration: 8000 });
     } catch(err: any) {
       toast.error(err.message);
       console.log(err);
