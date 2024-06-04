@@ -10,24 +10,6 @@ export default function Home() {
   const web3Utils = new Web3Utils();
   const signMessage = "Sign message with SSO";
 
-  async function signTokenMessage() {
-    try {
-      if (!web3Provider) throw Error("Need provider to sign!");
-      const message = "[basescan.org 04/06/2024 16:50:39] I, hereby verify that I am the owner/creator of the address [0xe2c86869216aC578bd62a4b8313770d9EE359A05]";
-
-      const signer = await web3Provider.getSigner();
-
-      if (!signer) throw Error("No signer!");
-
-      const signedMessage = await signer.signMessage(message);
-      console.log(signedMessage)
-      toast.success(`Signed Message: ${signedMessage}`, { duration: 8000 });
-    } catch (err: any) {
-      toast.error(err.message);
-      console.log(err);
-    }
-  }
-
   return (
     <>
       <Toaster />
@@ -51,7 +33,6 @@ export default function Home() {
           </section>
         }
           </div>
-        <button onClick={signTokenMessage}>Sign EMT Message!</button>
       </main>
     </>
   );
