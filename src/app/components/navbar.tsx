@@ -146,7 +146,7 @@ export default function NavBar() {
         onLoad={() => {
           (function({ ...args }) {
             const script = document.createElement('script');
-            script.src = 'https://cdn-email.ethermail.io/sdk/v2/ethermail.js';
+            script.src = 'https://cdn-email.ethermail.io/sdk/v2/staging-ethermail.js';
             document.body.appendChild(script);
             script.setAttribute('a', args.afid);
             script.setAttribute('b', args.communityAlias);
