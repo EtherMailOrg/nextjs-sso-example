@@ -1,5 +1,5 @@
 "use client"
-import ethers, { BrowserProvider } from 'ethers';
+import { ethers, BrowserProvider } from 'ethers';
 import { Toaster, toast } from "react-hot-toast";
 import { useAppSelector } from "@/lib/hooks";
 import { Web3Utils } from "@/utils/web3.utils";
