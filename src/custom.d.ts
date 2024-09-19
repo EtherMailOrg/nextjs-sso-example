@@ -4,7 +4,7 @@ declare namespace JSX {
       widget?: string;
       type?: string;
       permissions?: string;
-      text?: string;
+      label?: string;
     };
   }
 }

@@ -211,7 +211,8 @@ export default function NavBar() {
               </div>
               :
               <ethermail-login style={{width: "150px", backgroundColor: "black", color: "white", fontWeight: 700, borderRadius: "1rem"}} widget="6659a4865f3bb424d99d11b2" type="wallet"
-                               permissions={ssoPermission} label="Connect Wallet"></ethermail-login>}
+                               permissions={ssoPermission} label="Connect Wallet"></ethermail-login>
+            }
           </div>
         </div>
       </nav>
