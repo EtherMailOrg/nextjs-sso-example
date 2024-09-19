@@ -163,7 +163,7 @@ export default function NavBar() {
         <div>
           <h1>EtherMail SSO Test</h1>
         </div>
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 text-black">
           <div className="flex gap-2">
             <select onChange={handlePageChange}>
               <option key="labelOption" value="">--- Change Page ---</option>
