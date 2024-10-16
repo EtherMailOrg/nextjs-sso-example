@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ethermail/ethermail-wallet-provider": "^0.1.0",
+    "@ethermail/ethermail-wallet-provider": "^0.1.4",
     "@reduxjs/toolkit": "^2.2.5",
     "ethers": "^6.12.1",
     "jsonwebtoken": "^9.0.2",
