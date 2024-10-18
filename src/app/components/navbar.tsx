@@ -140,20 +140,6 @@ export default function NavBar() {
 
   return (
     <>
-      <Script
-        strategy="afterInteractive"
-        onLoad={() => {
-          const script = document.createElement('script');
-          script.src = 'https://cdn-email.ethermail.io/sdk/v2/staging-ethermail.js';
-          script.onload = () => {
-            // The script has loaded, now set attributes
-            script.setAttribute('a', '65ddf7aa3631bb310429bbb7');
-            script.setAttribute('b', 'prestige-worldwid');
-            script.setAttribute('c', 'login');
-          };
-          document.body.appendChild(script);
-        }}
-      />
       <nav className="flex justify-between p-6">
         <div>
           <h1>EtherMail SSO Test</h1>
