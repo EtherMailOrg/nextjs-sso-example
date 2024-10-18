@@ -141,21 +141,17 @@ export default function NavBar() {
   return (
     <>
       <Script
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         onLoad={() => {
-          (function({ ...args }) {
-            const script = document.createElement('script');
-            script.src = 'https://cdn-email.ethermail.io/sdk/v2/staging-ethermail.js';
-            document.body.appendChild(script);
-            script.setAttribute('a', args.afid);
-            script.setAttribute('b', args.communityAlias);
-            // @ts-ignore
-            script.setAttribute('c', args.features);
-          })({
-            afid: '65ddf7aa3631bb310429bbb7',
-            communityAlias: 'prestige-worldwid',
-            features: ['login']
-          });
+          const script = document.createElement('script');
+          script.src = 'https://cdn-email.ethermail.io/sdk/v2/staging-ethermail.js';
+          script.onload = () => {
+            // The script has loaded, now set attributes
+            script.setAttribute('a', '65ddf7aa3631bb310429bbb7');
+            script.setAttribute('b', 'prestige-worldwid');
+            script.setAttribute('c', 'login');
+          };
+          document.body.appendChild(script);
         }}
       />
       <nav className="flex justify-between p-6">
