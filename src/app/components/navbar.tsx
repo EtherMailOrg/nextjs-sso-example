@@ -141,7 +141,6 @@ export default function NavBar() {
   return (
     <>
       <Script
-        src="https://cdn-email.ethermail.io/sdk/v2/dev-ethermail.js"
         strategy="lazyOnload"
         onLoad={() => {
           (function({ ...args }) {
