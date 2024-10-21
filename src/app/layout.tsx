@@ -26,8 +26,8 @@ export default function RootLayout({
         p.setAttribute('c', args.features);
       }
     })({
-      afid: '65df72841e9e35f978ba45f5',
-      communityAlias: 'ethermail',
+      afid: '65ddf7aa3631bb310429bbb7',
+      communityAlias: 'prestige-worldwid',
       features: ['login'],
     });
   }, []);
