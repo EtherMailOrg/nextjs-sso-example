@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import web3ProviderSlice from "@/lib/reducers/web3ProviderSlice";
+import web3TestProviderSlice from "@/lib/reducers/web3TestProviderSlice";
 import ethermailProviderSlice from "@/lib/reducers/ethermailProviderSlice";
 import loginDataSlice from "@/lib/reducers/loginDataProviderSlice";
 
@@ -8,7 +9,8 @@ export const makeStore = () => {
     reducer: {
       web3Provider: web3ProviderSlice,
       ethermailProvider: ethermailProviderSlice,
-      loginData: loginDataSlice
+      loginData: loginDataSlice,
+      web3TestProvider: web3TestProviderSlice
     }
   })
 }
