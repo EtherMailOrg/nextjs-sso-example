@@ -1,5 +1,5 @@
 import { toast } from 'react-hot-toast';
-import { BrowserProvider, ethers } from 'ethers';
+import { BrowserProvider, ethers, JsonRpcSigner } from 'ethers';
 
 export class Web3Utils {
   constructor() {
@@ -30,13 +30,68 @@ export class Web3Utils {
 
       const tx = await signer.sendTransaction({
         to: recipient,
-        value: ethers.parseEther(amount),  // Adjust as needed
+        value: ethers.parseEther(amount),
       });
 
-      toast.success(`Transaction Sent: ${tx.hash}`, { duration: 8000 });
+      toast.success(`Transaction Sent: ${tx}`, { duration: 8000 });
     } catch (err: any) {
-      console.log("SEND TRANSACTION error");
+      toast.error(err.message);
+      console.log(err);
+    }
+  }
 
+  public async handleSendTokens(recipient: string, amount: string, web3Provider: BrowserProvider) {
+    try {
+      const smartContractAddress = '0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8'; // UDSC on sepolia
+
+      if (!web3Provider) throw Error('Need provider to send transaction!');
+
+      const erc20Abi = [
+        {
+          'constant': false,
+          'inputs': [
+            {
+              'name': '_to',
+              'type': 'address',
+            },
+            {
+              'name': '_value',
+              'type': 'uint256',
+            },
+          ],
+          'name': 'transfer',
+          'outputs': [
+            {
+              'name': '',
+              'type': 'bool',
+            },
+          ],
+          'payable': false,
+          'stateMutability': 'nonpayable',
+          'type': 'function',
+        },
+      ];
+
+      const signer: JsonRpcSigner = await web3Provider.getSigner();
+
+      const abi = new ethers.Interface(erc20Abi);
+      const data = abi.encodeFunctionData('transfer', [recipient, amount]);
+
+      const gasEstimate = await web3Provider.estimateGas({
+        from: signer.address,
+        to: recipient,
+        data: data,
+      });
+
+      const tx = await signer.sendTransaction({
+        to: smartContractAddress,
+        data: data,
+        gasLimit: gasEstimate,
+        gasPrice: ethers.parseUnits('50', 'gwei'),
+      });
+
+      toast.success(`Sent: ${tx}`, { duration: 8000 });
+    } catch (err: any) {
       toast.error(err.message);
       console.log(err);
     }
@@ -55,8 +110,6 @@ export class Web3Utils {
 
       toast.success(`Signed Typed Data: ${signature}`, { duration: 8000 });
     } catch (err: any) {
-      console.log("SIGNATURE v4 error");
-
       toast.error(err.message);
       console.log(err);
     }

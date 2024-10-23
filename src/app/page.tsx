@@ -4,9 +4,11 @@ import { Toaster } from 'react-hot-toast';
 import { useAppSelector } from '@/lib/hooks';
 import { Web3Utils } from '@/utils/web3.utils';
 import { useState } from 'react';
+import WebSocketProvider from 'web3-providers-ws';
 
 export default function Home() {
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
+  const webTest3Provider = useAppSelector(state => state.web3TestProvider.value) as WebSocketProvider | undefined;
   const loginData = useAppSelector(state => state.loginData.value);
   const web3Utils = new Web3Utils();
   const signMessage = 'Sign message with SSO';
@@ -59,6 +61,13 @@ export default function Home() {
                         <button onClick={async () => {
                           await web3Utils.handleSendTransaction(recipient, amount, web3Provider);
                         }}>Send Transaction
+                        </button>
+                      </div>
+
+                      <div>
+                        <button onClick={async () => {
+                          await web3Utils.handleSendTokens(recipient, amount, web3Provider);
+                        }}>Send Tokens
                         </button>
                       </div>
 

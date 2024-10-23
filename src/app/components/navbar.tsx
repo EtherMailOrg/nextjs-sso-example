@@ -18,6 +18,8 @@ import Script from 'next/script';
 import { Chain } from '@/intefaces/web3.interfaces';
 import { usePathname, useRouter } from 'next/navigation';
 import { EthermailLoginData } from '@/intefaces/ethermail.interfaces';
+import Web3 from "web3";
+import { _web3TestProvider } from '@/lib/reducers/web3TestProviderSlice';
 
 export default function NavBar() {
   const router = useRouter();
@@ -32,7 +34,9 @@ export default function NavBar() {
   const [chains, setChains] = useState<Chain[]>([{ name: 'Ethereum', chainId: 1 }, {
     name: 'Polygon',
     chainId: 137,
-  }, { name: 'Arbitrum', chainId: 42161 }]);
+  }, { name: 'Arbitrum', chainId: 42161 },
+    { name: 'Sepolia', chainId: 11155111}
+  ]);
   const [chain, setChain] = useState<Chain | undefined>();
   const [loginType, setLoginType] = useState('wallet');
 
@@ -49,6 +53,8 @@ export default function NavBar() {
       });
       const __browserProvider = new BrowserProvider(__ethermailProvider);
 
+      const web3 = new Web3(__ethermailProvider);
+
       __ethermailProvider.on('disconnect', () => {
         toast('Disconnect event heard!');
       });
@@ -64,6 +70,7 @@ export default function NavBar() {
       dispatch(_loginDataProvider.setData(__loginData as EthermailLoginData));
       dispatch(_ethermailProvider.setProvider(__ethermailProvider));
       dispatch(_web3Provider.setProvider(__browserProvider));
+      dispatch(_web3TestProvider.setProvider(web3));
     });
 
     window.addEventListener('EtherMailTokenError', (event: Event) => {
