@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { useAppSelector } from '@/lib/hooks';
 import { Web3Utils } from '@/utils/web3.utils';
 import { useState } from 'react';
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount, useWalletClient, usePublicClient } from "wagmi";
 
 export default function Home() {
   const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
@@ -14,8 +14,11 @@ export default function Home() {
 
   const [recipient, setRecipient] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
+  const [tokenAmount, setTokenAmount] = useState<string>('');
+  const [tokenSmartContract, setTokenSmartContract] = useState<string>('0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8'); // UDSC on sepolia
 
   const client = useWalletClient();
+  const publicClient = usePublicClient();
 
   return (
     <>
@@ -27,16 +30,15 @@ export default function Home() {
               <div>
                 <div className="flex flex-col align-center justify-center gap-4">
                   <h1>Actions:</h1>
-                  <div>
-                    <div>
+                  <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-2">
                       <h4>Sign Message:</h4>
                       <button onClick={async () => {
-                        await web3Utils.handleSignMessage(signMessage, client);
+                        await web3Utils.handleSignMessage(signMessage, client?.data ?? undefined);
                       }}>Sign Message
                       </button>
                     </div>
-
-                    <div>
+                    <div className="flex flex-col gap-2">
                       <h4>Send Transaction:</h4>
                       <div>
                         <input
@@ -57,14 +59,32 @@ export default function Home() {
                         />
                       </div>
                       <button onClick={async () => {
-                        await web3Utils.handleSendTransaction(recipient, amount, web3Provider);
+                        await web3Utils.handleSendTransaction(recipient, amount, client?.data ?? undefined);
                       }}>Send Transaction
                       </button>
                     </div>
-
-                    <div>
+                    <div className="flex flex-col gap-2">
+                      <h4>Send Tokens:</h4>
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Smart Contract Address"
+                          value={tokenSmartContract}
+                          onChange={(e) => setTokenSmartContract(e.target.value)}
+                          className="text-black"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Token Amount"
+                          value={tokenAmount}
+                          onChange={(e) => setTokenAmount(e.target.value)}
+                          className="text-black"
+                        />
+                      </div>
                       <button onClick={async () => {
-                        await web3Utils.handleSendTokens(recipient, amount, web3Provider);
+                        await web3Utils.handleSendTokens(recipient, tokenAmount, tokenSmartContract as `0x${string}`, client?.data ?? undefined, publicClient);
                       }}>Send Tokens
                       </button>
                     </div>
@@ -94,7 +114,7 @@ export default function Home() {
                             date: Date.now()
                           },
                         };
-                        await web3Utils.handleSignTypedData(typedData, web3Provider);
+                        await web3Utils.handleSignTypedData(typedData, client?.data ?? undefined);
                       }}>Sign Typed Data v4
                       </button>
                     </div>
