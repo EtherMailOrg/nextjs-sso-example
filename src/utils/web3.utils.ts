@@ -5,15 +5,24 @@ export class Web3Utils {
   constructor() {
   }
 
-  public async handleSignMessage(message: string, web3Provider: BrowserProvider | undefined) {
+  public truncateAddress = (addr: string | undefined) => {
+    if (!addr) return 'N/A';
+    return `${addr.slice(0, 8)}...${addr.slice(-6)}`; // 0x + 6 digits, ..., last 6 digits
+  };
+
+  public async handleSignMessage(message: string, web3Provider: any | undefined) {
     try {
+      web3Provider = web3Provider?.data;
       if (!web3Provider) throw Error('Need provider to sign!');
 
-      const signer = await web3Provider.getSigner();
+      const signer = web3Provider.account;
 
       if (!signer) throw Error('No signer!');
 
-      const signedMessage = await signer.signMessage(message);
+      const signedMessage = await web3Provider.signMessage({
+        account: signer,
+        message
+      });
       toast.success(`Signed Message: ${signedMessage}`, { duration: 8000 });
     } catch (err: any) {
       toast.error(err.message);

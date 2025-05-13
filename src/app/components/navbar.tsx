@@ -1,26 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import {
-  EtherMailSignInOnSuccessEvent,
-  EtherMailTokenErrorEvent,
   SSOPermissionType,
 } from '@/intefaces/web3.interfaces';
-import jwt from 'jsonwebtoken';
 import { EtherMailProvider } from '@ethermail/ethermail-wallet-provider';
 import { BrowserProvider } from 'ethers';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { _web3Provider, web3ProviderSlice } from '@/lib/reducers/web3ProviderSlice';
+import { _web3Provider } from '@/lib/reducers/web3ProviderSlice';
 import { _ethermailProvider } from '@/lib/reducers/ethermailProviderSlice';
 import { _loginDataProvider } from '@/lib/reducers/loginDataProviderSlice';
-import Script from 'next/script';
 import { Chain } from '@/intefaces/web3.interfaces';
 import { usePathname, useRouter } from 'next/navigation';
 import { EthermailLoginData } from '@/intefaces/ethermail.interfaces';
-import Web3 from "web3";
-import { _web3TestProvider } from '@/lib/reducers/web3TestProviderSlice';
-import { JwtUtils } from '@/utils/jwt.utils';
+import { useAccount, useDisconnect } from 'wagmi';
+import { WalletOptions } from "@/app/components/WagmiWalletOptions";
+import { Web3Utils } from "@/utils/web3.utils";
 
 export default function NavBar() {
   const router = useRouter();
@@ -41,60 +37,9 @@ export default function NavBar() {
   const [chain, setChain] = useState<Chain | undefined>();
   const [loginType, setLoginType] = useState('wallet');
 
-  useEffect(() => {
-    toast.success('Setting Event Listeners!');
-    window.addEventListener('EtherMailSignInOnSuccess', async (event) => {
-      const __loginEvent = event as EtherMailSignInOnSuccessEvent;
+  const { isConnected, address } = useAccount();
 
-      const jwtUtils = new JwtUtils();
-
-      const __sessionToken = __loginEvent.detail.token;
-
-      // @dev Verification of the token is optional
-      const tokenVerificationResponse = await jwtUtils.verifyToken(__sessionToken);
-      if (tokenVerificationResponse.message !== 'Token is valid') {
-        throw new Error('Invalid Token!');
-      }
-
-      const __loginData = jwtUtils.decodeToken(__sessionToken) as EthermailLoginData;
-      console.log(__loginData);
-
-      const __ethermailProvider = new EtherMailProvider({
-        websocketServer: `wss://${process.env.NEXT_PUBLIC_ETHERMAIL_API_DOMAIN}/events`,
-        appUrl: `https://${process.env.NEXT_PUBLIC_ETHERMAIL_DOMAIN}`,
-      });
-      const __browserProvider = new BrowserProvider(__ethermailProvider);
-
-      const web3 = new Web3(__ethermailProvider);
-
-      __ethermailProvider.on('disconnect', () => {
-        toast('Disconnect event heard!');
-      });
-
-      __ethermailProvider.on('chainChanged', () => {
-        toast('Changed chain event heard!');
-      });
-
-      __ethermailProvider.on('message', () => {
-        toast('Message event heard!');
-      });
-
-      dispatch(_loginDataProvider.setData(__loginData as EthermailLoginData));
-      dispatch(_ethermailProvider.setProvider(__ethermailProvider));
-      dispatch(_web3Provider.setProvider(__browserProvider));
-      dispatch(_web3TestProvider.setProvider(web3));
-    });
-
-    window.addEventListener('EtherMailTokenError', (event: Event) => {
-      console.log(event);
-      const errorEvent = event as EtherMailTokenErrorEvent;
-      if (errorEvent.detail.type === 'expired') {
-        toast.error('Expired Session!');
-      } else if (errorEvent.detail.type === 'permissions') {
-        toast.error('Permissions Error!');
-      }
-    });
-  }, []);
+  const web3Utils = new Web3Utils();
 
   function handleSSOPermissionChange(event: React.ChangeEvent<HTMLSelectElement>) {
     try {
@@ -133,6 +78,7 @@ export default function NavBar() {
 
   async function handleDisconnect() {
     try {
+      useDisconnect()
       if (!ethermailProvider) throw new Error('No Provider!');
 
 
@@ -208,30 +154,20 @@ export default function NavBar() {
               <option value="sso">SSO</option>
             </select>
           </div>
-          <div>
-            {loginData ?
+          {
+            isConnected ?
               <div className="flex justify-between gap-2">
                 <div className="flex flex-col gap-2">
-                  <h3>EtherMail Signer:</h3>
-                  <p>{loginData.wallet}</p>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h3>Signer Permissions:</h3>
-                  <p>{loginData.permissions}</p>
+                  <h3 className="text-bold text-white">EtherMail Signer:</h3>
+                  <p className="text-white">{web3Utils.truncateAddress(address)}</p>
                 </div>
                 <button onClick={handleDisconnect}>Disconnect</button>
               </div>
               :
-              <ethermail-login style={{
-                width: '150px',
-                backgroundColor: 'black',
-                color: 'white',
-                fontWeight: 700,
-                borderRadius: '1rem',
-              }} widget={process.env.NEXT_PUBLIC_WIDGET_ID} type={loginType}
-                               permissions={ssoPermission} label="Connect Wallet"></ethermail-login>
-            }
-          </div>
+              <div>
+                <WalletOptions />
+              </div>
+          }
         </div>
       </nav>
     </>
