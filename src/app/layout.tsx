@@ -23,10 +23,8 @@ export default function RootLayout({
     <StoreProvider>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <div>
-            <NavBar />
-            {children}
-          </div>
+          <NavBar />
+          {children}
         </QueryClientProvider>
       </WagmiProvider>
     </StoreProvider>

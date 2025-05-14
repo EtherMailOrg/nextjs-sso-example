@@ -11,7 +11,7 @@ export default function NFTPage() {
   const signMessage = "Sign message with SSO on NFTs!";
 
   return (
-    <>
+    <div>
       <Toaster />
       <main className="flex min-h-screen flex-col items-center p-16 gap-2">
         <h1>NFT Page:</h1>
@@ -21,14 +21,14 @@ export default function NFTPage() {
               <div>
                 <div className="flex flex-col align-center justify-center gap-4">
                   <h1>Actions:</h1>
-                  <div>
-                    <h4>Sign Message:</h4>
-                    <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Sign Message</button>
-                  </div>
-                  <div>
-                    <h4>Claim NFT:</h4>
-                    <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim</button>
-                  </div>
+                  {/*<div>*/}
+                  {/*  <h4>Sign Message:</h4>*/}
+                  {/*  <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Sign Message</button>*/}
+                  {/*</div>*/}
+                  {/*<div>*/}
+                  {/*  <h4>Claim NFT:</h4>*/}
+                  {/*  <button onClick={async () => {await web3Utils.handleSignMessage(signMessage, web3Provider)}}>Claim</button>*/}
+                  {/*</div>*/}
                 </div>
               </div>
             </section>
@@ -39,6 +39,6 @@ export default function NFTPage() {
           }
         </div>
       </main>
-    </>
+    </div>
   );
 }

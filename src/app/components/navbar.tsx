@@ -76,7 +76,7 @@ export default function NavBar() {
   }
 
   return (
-    <>
+    <div>
       <nav className="flex justify-between p-6">
         <div>
           <h1>EtherMail SSO Test</h1>
@@ -146,6 +146,6 @@ export default function NavBar() {
           }
         </div>
       </nav>
-    </>
+    </div>
   );
 }

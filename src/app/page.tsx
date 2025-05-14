@@ -4,6 +4,7 @@ import { Web3Utils } from '@/utils/web3.utils';
 import { useEffect, useState } from "react";
 import { useAccount, useWalletClient, usePublicClient, useConnect } from "wagmi";
 import { EthermailLoginData } from "@/intefaces/ethermail.interfaces";
+import { PublicClient } from "viem";
 
 export default function Home() {
   const web3Utils = new Web3Utils();
@@ -104,7 +105,7 @@ export default function Home() {
                         />
                       </div>
                       <button onClick={async () => {
-                        await web3Utils.handleSendTokens(tokenRecipient, tokenAmount, tokenSmartContract as `0x${string}`, walletClient?.data ?? undefined, publicClient);
+                        await web3Utils.handleSendTokens(tokenRecipient, tokenAmount, tokenSmartContract as `0x${string}`, walletClient?.data ?? undefined, publicClient as PublicClient);
                       }}>Send Tokens
                       </button>
                     </div>
