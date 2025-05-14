@@ -1,5 +1,5 @@
 import { toast } from 'react-hot-toast';
-import { BrowserProvider, ethers, JsonRpcSigner } from 'ethers';
+import { ethers } from 'ethers';
 import { PublicClient, WalletClient } from "viem";
 
 export class Web3Utils {
@@ -51,7 +51,7 @@ export class Web3Utils {
 
   public async handleSendTokens(recipient: string, amount: string, tokenAddress: `0x${string}`, walletClient: WalletClient | undefined, publicClient: PublicClient) {
     try {
-      if (!walletClient) throw Error('Need Wallet Client to send transaction!');
+      if (!walletClient) throw Error('Need Wallet Client to send transact ion!');
       if (!ethers.isAddress(tokenAddress)) throw Error('Invalid token address!');
 
       const erc20Abi = [

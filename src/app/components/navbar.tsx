@@ -1,20 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState } from "react";
 import { toast } from 'react-hot-toast';
 import {
   SSOPermissionType,
 } from '@/intefaces/web3.interfaces';
-import { EtherMailProvider } from '@ethermail/ethermail-wallet-provider';
-import { BrowserProvider } from 'ethers';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { useAppDispatch } from '@/lib/hooks';
 import { _web3Provider } from '@/lib/reducers/web3ProviderSlice';
 import { _ethermailProvider } from '@/lib/reducers/ethermailProviderSlice';
 import { _loginDataProvider } from '@/lib/reducers/loginDataProviderSlice';
-import { Chain } from '@/intefaces/web3.interfaces';
 import { usePathname, useRouter } from 'next/navigation';
-import { EthermailLoginData } from '@/intefaces/ethermail.interfaces';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { WalletOptions } from "@/app/components/WagmiWalletOptions";
 import { Web3Utils } from "@/utils/web3.utils";
 
@@ -22,22 +18,14 @@ export default function NavBar() {
   const router = useRouter();
   const path = usePathname();
 
-  const web3Provider = useAppSelector(state => state.web3Provider.value) as BrowserProvider | undefined;
-  const ethermailProvider = useAppSelector(state => state.ethermailProvider.value) as EtherMailProvider | undefined;
-  const loginData = useAppSelector(state => state.loginData.value) as EthermailLoginData | undefined;
   const dispatch = useAppDispatch();
 
   const [ssoPermission, setSsoPermission] = useState('write');
-  const [chains, setChains] = useState<Chain[]>([{ name: 'Ethereum', chainId: 1 }, {
-    name: 'Polygon',
-    chainId: 137,
-  }, { name: 'Arbitrum', chainId: 42161 },
-    { name: 'Sepolia', chainId: 11155111}
-  ]);
-  const [chain, setChain] = useState<Chain | undefined>();
   const [loginType, setLoginType] = useState('wallet');
 
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, chainId } = useAccount();
+  const { chains, switchChain } = useSwitchChain();
+  const { disconnect } = useDisconnect();
 
   const web3Utils = new Web3Utils();
 
@@ -56,33 +44,9 @@ export default function NavBar() {
     }
   }
 
-  async function handleChainChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    try {
-      const chainId = +event.target.value;
-
-      if (!ethermailProvider) throw new Error('Connect wallet before');
-
-      await ethermailProvider.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: chainId }],
-      });
-
-      setChain(chains.find(chain => chain.chainId === chainId) ?? undefined);
-      toast.success('Chain changed!');
-    } catch (err: any) {
-      event.target.value = '';
-      toast.error(err.message);
-      console.log(err);
-    }
-  }
-
   async function handleDisconnect() {
     try {
-      useDisconnect()
-      if (!ethermailProvider) throw new Error('No Provider!');
-
-
-      await (ethermailProvider as EtherMailProvider).disconnect();
+      disconnect();
 
       dispatch(_web3Provider.reset());
       dispatch(_ethermailProvider.reset());
@@ -128,27 +92,39 @@ export default function NavBar() {
                 })
               }
             </select>
-            {loginData ?
-              '' :
-              <select onChange={handleSSOPermissionChange}>
-                <option key="labelOption" value="">--- Change SSO Permissions ---</option>
-                {
-                  ['write', 'read', 'none'].map(permission => {
-                    return <option key={'ssoOption-' + permission}
-                                   value={permission}>{permission}{ssoPermission === permission ? ' (Current)' : ''}</option>;
-                  })
-                }
-              </select>
-            }
-            <select onChange={handleChainChange}>
-              <option key="labelOption" value="">--- Change Chain ---</option>
+            <select onChange={handleSSOPermissionChange}>
+              <option key="labelOption" value="">--- Change SSO Permissions ---</option>
               {
-                chains.map(_chain => {
-                  return <option key={'chain-' + _chain.chainId}
-                                 value={_chain.chainId}>{_chain.name + '-' + _chain.chainId}{_chain.chainId === chain?.chainId ? ' (Current)' : ''}</option>;
+                ['write', 'read', 'none'].map(permission => {
+                  return <option key={'ssoOption-' + permission}
+                                 value={permission}>{permission}{ssoPermission === permission ? ' (Current)' : ''}</option>;
                 })
               }
             </select>
+            {
+              isConnected ?
+                <div className="flex flex-col gap-2 p-2 items-center">
+                  <p className="font-bold text-white">Change Chain:</p>
+                  <div className="flex gap-2">
+                    <select
+                      onChange={(e) => {
+                        const chainId = +e.target.value; // Convert to number
+                        if (chainId) switchChain({ chainId }); // Call switchChain if a valid chainId is selected
+                      }}
+                      value={chainId}
+                    >
+                      <option value="" disabled>--- Select Chain ---</option>
+                      {chains.map((chain) => (
+                        <option key={chain.id} value={chain.id}>
+                          {chain.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                :
+                ''
+            }
             <select onChange={handleLoginTypeChange} value={loginType}>
               <option value="wallet">Wallet</option>
               <option value="sso">SSO</option>
