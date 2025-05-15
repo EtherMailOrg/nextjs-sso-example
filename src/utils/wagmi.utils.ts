@@ -1,7 +1,7 @@
 import { http, createConfig, injected } from "wagmi";
 import { walletConnect } from "wagmi/connectors";
 import { mainnet, polygon, arbitrum, sepolia } from 'wagmi/chains';
-import { ethermailConnector } from "@/utils/ethermail.connector";
+import { ethermailConnector } from "@ethermail/ethermail-wallet-provider";
 
 export const config = createConfig({
   chains: [mainnet, polygon, arbitrum, sepolia],
