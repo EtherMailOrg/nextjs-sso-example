@@ -1,36 +1,45 @@
 import { toast } from 'react-hot-toast';
-import { BrowserProvider, ethers, JsonRpcSigner } from 'ethers';
+import { ethers } from 'ethers';
+import { PublicClient, WalletClient } from "viem";
 
 export class Web3Utils {
   constructor() {
   }
 
-  public async handleSignMessage(message: string, web3Provider: BrowserProvider | undefined) {
-    try {
-      if (!web3Provider) throw Error('Need provider to sign!');
+  public truncateAddress = (addr: string | undefined) => {
+    if (!addr) return 'N/A';
+    return `${addr.slice(0, 8)}...${addr.slice(-6)}`; // 0x + 6 digits, ..., last 6 digits
+  };
 
-      const signer = await web3Provider.getSigner();
+  public async handleSignMessage(message: string, walletClient: WalletClient | undefined) {
+    try {
+      if (!walletClient) throw Error('Need Wallet Client to sign with');
+
+      const signer = walletClient.account;
 
       if (!signer) throw Error('No signer!');
 
-      const signedMessage = await signer.signMessage(message);
+      const signedMessage = await walletClient.signMessage({
+        account: signer,
+        message
+      });
       toast.success(`Signed Message: ${signedMessage}`, { duration: 8000 });
     } catch (err: any) {
       toast.error(err.message);
     }
   }
 
-  public async handleSendTransaction(recipient: string, amount: string, web3Provider: BrowserProvider | undefined) {
+  public async handleSendTransaction(recipient: string, amount: string, walletClient: WalletClient | undefined) {
     try {
-      if (!web3Provider) throw Error('Need provider to send transaction!');
+      if (!walletClient) throw Error('Need Wallet Client to send transaction!');
 
-      const signer = await web3Provider.getSigner();
+      const account = walletClient.account;
 
-      if (!signer) throw Error('No signer!');
-
-      const tx = await signer.sendTransaction({
-        to: recipient,
+      const tx = await walletClient.sendTransaction({
+        account: account!.address,
+        to: recipient as unknown as any,
         value: ethers.parseEther(amount),
+        chain: walletClient.chain,
       });
 
       toast.success(`Transaction Sent: ${tx}`, { duration: 8000 });
@@ -40,13 +49,26 @@ export class Web3Utils {
     }
   }
 
-  public async handleSendTokens(recipient: string, amount: string, web3Provider: BrowserProvider) {
+  public async handleSendTokens(recipient: string, amount: string, tokenAddress: `0x${string}`, walletClient: WalletClient | undefined, publicClient: PublicClient) {
     try {
-      const smartContractAddress = '0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8'; // UDSC on sepolia
-
-      if (!web3Provider) throw Error('Need provider to send transaction!');
+      if (!walletClient) throw Error('Need Wallet Client to send transact ion!');
+      if (!ethers.isAddress(tokenAddress)) throw Error('Invalid token address!');
 
       const erc20Abi = [
+        {
+          'constant': true,
+          'inputs': [],
+          'name': 'decimals',
+          'outputs': [
+            {
+              'name': '',
+              'type': 'uint8',
+            },
+          ],
+          'payable': false,
+          'stateMutability': 'view',
+          'type': 'function',
+        },
         {
           'constant': false,
           'inputs': [
@@ -72,41 +94,38 @@ export class Web3Utils {
         },
       ];
 
-      const signer: JsonRpcSigner = await web3Provider.getSigner();
+      const normalizedTokenAddress = ethers.getAddress(tokenAddress);
 
-      const abi = new ethers.Interface(erc20Abi);
-      const data = abi.encodeFunctionData('transfer', [recipient, amount]);
+      const tokenDecimals: number = await publicClient.readContract({
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'decimals',
+      }) as number;
+      if (!tokenDecimals) throw Error('Please, verify token address and try again.');
 
-      const gasEstimate = await web3Provider.estimateGas({
-        from: signer.address,
-        to: recipient,
-        data: data,
-      });
+      const { request } = await publicClient.simulateContract({
+        account: walletClient.account!.address,
+        address: normalizedTokenAddress as `0x${string}`,
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [recipient, ethers.parseUnits(amount, tokenDecimals)],
+        chain: walletClient.chain,
+      })
 
-      const tx = await signer.sendTransaction({
-        to: smartContractAddress,
-        data: data,
-        gasLimit: gasEstimate,
-        gasPrice: ethers.parseUnits('50', 'gwei'),
-      });
+      const writeContractResponse = await walletClient.writeContract(request);
 
-      toast.success(`Sent: ${tx}`, { duration: 8000 });
+      toast.success(`Sent: ${writeContractResponse}`, { duration: 8000 });
     } catch (err: any) {
       toast.error(err.message);
       console.log(err);
     }
   }
 
-  public async handleSignTypedData(data: any, web3Provider: BrowserProvider | undefined) {
+  public async handleSignTypedData(data: any, walletClient: WalletClient | undefined) {
     try {
-      if (!web3Provider) throw Error('Need provider to sign!');
+      if (!walletClient) throw Error('Need Wallet Client to sign typed data!');
 
-      const signer = await web3Provider.getSigner();
-
-      if (!signer) throw Error('No signer!');
-
-      const address = await signer.getAddress();
-      const signature = await web3Provider.send('eth_signTypedData_v4', [address, JSON.stringify(data)]);
+      const signature = await walletClient.signTypedData(data);
 
       toast.success(`Signed Typed Data: ${signature}`, { duration: 8000 });
     } catch (err: any) {
