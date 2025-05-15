@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ethermail/ethermail-wallet-provider": "^0.1.15",
+    "@ethermail/ethermail-wallet-provider": "^0.1.16",
     "@reduxjs/toolkit": "^2.2.5",
     "@tanstack/react-query": "^5.75.6",
     "@wagmi/core": "^2.17.1",

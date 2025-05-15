@@ -3,6 +3,8 @@ import { walletConnect } from "wagmi/connectors";
 import { mainnet, polygon, arbitrum, sepolia } from 'wagmi/chains';
 import { ethermailConnector } from "@ethermail/ethermail-wallet-provider";
 
+const environment = process.env.NEXT_PUBLIC_ENVIRONMENT as 'staging' | 'dev' | 'production' ?? 'production';
+
 export const config = createConfig({
   chains: [mainnet, polygon, arbitrum, sepolia],
   connectors: [
@@ -16,6 +18,7 @@ export const config = createConfig({
       community_name: process.env.NEXT_PUBLIC_WIDGET_COMMUNITY_NAME ?? '',
       permissions: 'write',
       loginType: 'wallet',
+      environment
     })
   ],
   transports: {
