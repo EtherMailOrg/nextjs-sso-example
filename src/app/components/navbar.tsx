@@ -24,7 +24,7 @@ export default function NavBar() {
   const [loginType, setLoginType] = useState('wallet');
 
   const { isConnected, address, chainId } = useAccount();
-  const { chains, switchChain } = useSwitchChain();
+  const { chains, switchChainAsync } = useSwitchChain();
   const { disconnect } = useDisconnect();
 
   const web3Utils = new Web3Utils();
@@ -107,16 +107,21 @@ export default function NavBar() {
                   <p className="font-bold text-white">Change Chain:</p>
                   <div className="flex gap-2">
                     <select
-                      onChange={(e) => {
-                        const chainId = +e.target.value; // Convert to number
-                        if (chainId) switchChain({ chainId }); // Call switchChain if a valid chainId is selected
+                      onChange={async (e) => {
+                        const chainId = +e.target.value;
+                        if (chainId) {
+                          await switchChainAsync({ chainId });
+                          toast.success(`Chain changed to chain with ID: ${chainId}`);
+                        } else {
+                          toast.error('Invalid chainId');
+                        }
                       }}
                       value={chainId}
                     >
                       <option value="" disabled>--- Select Chain ---</option>
                       {chains.map((chain) => (
                         <option key={chain.id} value={chain.id}>
-                          {chain.name}
+                          {chain.name + ' - ' + chain.id}
                         </option>
                       ))}
                     </select>

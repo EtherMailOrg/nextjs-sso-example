@@ -1,6 +1,7 @@
 import { toast } from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { PublicClient, WalletClient } from "viem";
+import Web3 from "web3";
 
 export class Web3Utils {
   constructor() {
@@ -29,23 +30,30 @@ export class Web3Utils {
     }
   }
 
-  public async handleSendTransaction(recipient: string, amount: string, walletClient: WalletClient | undefined) {
+  public async handleSendTransaction(
+    recipient: string,
+    amount: string,
+    walletClient: WalletClient | undefined
+  ) {
     try {
-      if (!walletClient) throw Error('Need Wallet Client to send transaction!');
+      if (!walletClient) throw new Error("Need Wallet Client to send transaction!");
+
+      const web3Provider = new Web3(walletClient);
 
       const account = walletClient.account;
 
-      const tx = await walletClient.sendTransaction({
-        account: account!.address,
-        to: recipient as unknown as any,
-        value: ethers.parseEther(amount),
-        chain: walletClient.chain,
+      const tx = await web3Provider.eth.sendTransaction({
+        from: account!.address,
+        to: recipient,
+        value: web3Provider.utils.toWei(amount, "ether")
       });
 
-      toast.success(`Transaction Sent: ${tx}`, { duration: 8000 });
+      toast.success(`Transaction Sent: ${tx.transactionHash}`, { duration: 8000 });
+      return tx;
     } catch (err: any) {
       toast.error(err.message);
-      console.log(err);
+      console.error("Transaction error:", err);
+      throw err;
     }
   }
 
