@@ -11,8 +11,8 @@ import { _ethermailProvider } from '@/lib/reducers/ethermailProviderSlice';
 import { _loginDataProvider } from '@/lib/reducers/loginDataProviderSlice';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
-import { WalletOptions } from "@/app/components/WagmiWalletOptions";
 import { Web3Utils } from "@/utils/web3.utils";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function NavBar() {
   const router = useRouter();
@@ -135,20 +135,7 @@ export default function NavBar() {
               <option value="sso">SSO</option>
             </select>
           </div>
-          {
-            isConnected ?
-              <div className="flex justify-between gap-2">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-bold text-white">EtherMail Signer:</h3>
-                  <p className="text-white">{web3Utils.truncateAddress(address)}</p>
-                </div>
-                <button onClick={handleDisconnect}>Disconnect</button>
-              </div>
-              :
-              <div>
-                <WalletOptions />
-              </div>
-          }
+          <ConnectButton label={"Connect Rainbow"} showBalance={true} />
         </div>
       </nav>
     </div>
